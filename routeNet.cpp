@@ -50,8 +50,8 @@ routeNetMatrix::routeNetMatrix() {
 	}
 
 	return;
-}
-
-void routeNetMatrix::flodyRouterAlgorithm() {
+	}
 	
+void routeNetMatrix::flodyRouterAlgorithm() {
+
 }
