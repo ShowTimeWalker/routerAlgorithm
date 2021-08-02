@@ -1,14 +1,19 @@
 #pragma once
 #include <vector>
+#include <list>
 #include <unordered_map>
+#include <algorithm>
 #include <random>
 #include <ctime>
-#include <algorithm>
+#include <iostream>
+#include <iomanip>
+#include <Windows.h>
 
-#define AdjacentNum 2
-#define ProxyNodeNum 6
+#define AdjacentNum 8
+#define ProxyNodeNum 100
 #define FixedDelay 1
-#define MapSize 1000
+#define MapSize 80
+#define MinDist 4
 
 typedef struct {
 	int x;
@@ -17,22 +22,24 @@ typedef struct {
 
 class proxyNode {
 private:
-	position nodePosition;
+	int nodeId;
 	int generateRandom() {
 		return rand();
 	}
 public:
+	position nodePosition;
 	std::unordered_map<proxyNode*, int> adjacentNodes;
-	proxyNode();
+	proxyNode(int id);
 	int getDistance(proxyNode* peer);
+	bool isNewNodeLegal(std::vector<proxyNode*> proxyNodes);
 };
 
 typedef struct {
+	int distance;
+	std::list<proxyNode*> routeTrace;
+	int distanceBeforeRoute;
 	proxyNode* start;
 	proxyNode* end;
-	std::vector<int> routeTrace;
-	int distance;
-	int distanceBeforeRoute;
 }routeInfo;
 
 class routeNetMatrix {
@@ -41,6 +48,8 @@ private:
 	std::vector<std::vector<routeInfo>> routeTable;
 public:
 	routeNetMatrix();
+	void displayRouteTable();
+	void displayRouteGraph();
 	void flodyRouterAlgorithm();
 };
 
