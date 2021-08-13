@@ -23,6 +23,10 @@ bool proxyNode::isNewNodeLegal(std::vector<proxyNode*> proxyNodes) {
 	return true;
 }
 
+int proxyNode::getNodeId() {
+	return this->nodeId;
+}
+
 routeNetMatrix::routeNetMatrix() {
 	srand(time(0));
 
@@ -66,14 +70,14 @@ routeNetMatrix::routeNetMatrix() {
 		}
 	}
 	displayRouteGraph();
-	displayRouteTable();
+	//displayRouteTable();
 
 	flodyRouterAlgorithm();
 
-	displayRouteTable();
+	//displayRouteTable();
 	return;
 	}
-	
+
 void routeNetMatrix::flodyRouterAlgorithm() {
 	for (int trans = 0; trans < ProxyNodeNum; trans++) {
 		for (int start = 0; start < ProxyNodeNum; start++) {
@@ -119,6 +123,7 @@ void routeNetMatrix::displayRouteTable() {
 
 void routeNetMatrix::displayRouteGraph() {
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle, 0X0F);
 	COORD cursor;
 	for (int i = 0; i < ProxyNodeNum; i++) {
 		cursor.X = proxyNodes[i]->nodePosition.x * 2;
@@ -130,4 +135,29 @@ void routeNetMatrix::displayRouteGraph() {
 	cursor.Y = MapSize + 1;
 	SetConsoleCursorPosition(handle, cursor);
 	std::cout << "node graph" << std::endl << std::endl << std::endl;
+}
+
+std::list<proxyNode*> routeNetMatrix::getAndDisplayBestRoutePath(int start, int end) {
+	std::list<proxyNode*> res = this->routeTable[start][end].routeTrace;
+
+	auto iter = res.begin();
+	std::cout << "start -> ";
+	while (iter != res.end()) {
+		std::cout << (*iter)->getNodeId() << " -> ";
+		iter++;
+	}
+	std::cout << "end" << std::endl << std::endl;
+
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle, 0X02);
+	iter = res.begin();
+	COORD cursor;
+	while (iter != res.end()) {
+		cursor.X = (*iter)->nodePosition.x * 2;
+		cursor.Y = (*iter)->nodePosition.y;
+		SetConsoleCursorPosition(handle, cursor);
+		std::cout << (*iter)->getNodeId();
+		iter++;
+	}
+	return res;
 }

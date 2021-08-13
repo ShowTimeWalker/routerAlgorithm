@@ -9,11 +9,10 @@
 #include <iomanip>
 #include <Windows.h>
 
-#define AdjacentNum 8
+#define AdjacentNum 6
 #define ProxyNodeNum 100
-#define FixedDelay 1
 #define MapSize 80
-#define MinDist 4
+#define MinDist 5
 
 typedef struct {
 	int x;
@@ -27,11 +26,17 @@ private:
 		return rand();
 	}
 public:
-	position nodePosition;
-	std::unordered_map<proxyNode*, int> adjacentNodes;
+	position nodePosition;//const reference, read only
+	const position& getPosition()const {
+		return nodePosition;
+	}
+
+	std::unordered_map<proxyNode*, int> adjacentNodes;//privode methods
+
 	proxyNode(int id);
 	int getDistance(proxyNode* peer);
 	bool isNewNodeLegal(std::vector<proxyNode*> proxyNodes);
+	int getNodeId();
 };
 
 typedef struct {
@@ -44,6 +49,7 @@ typedef struct {
 
 class routeNetMatrix {
 private:
+	int readCount;
 	std::vector<proxyNode*> proxyNodes;
 	std::vector<std::vector<routeInfo>> routeTable;
 public:
@@ -51,5 +57,7 @@ public:
 	void displayRouteTable();
 	void displayRouteGraph();
 	void flodyRouterAlgorithm();
+	std::list<proxyNode*> getAndDisplayBestRoutePath(int start, int end);
+
 };
 
